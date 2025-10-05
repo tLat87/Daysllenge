@@ -1,21 +1,23 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
+ * 2Days Sport Challenge App
+ * A simple and motivating way to add sport to your life
  *
  * @format
  */
 
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
+import React from 'react';
+import { StatusBar, StyleSheet, View } from 'react-native';
+import { AppProvider } from './src/context/AppContext';
+import AppContainer from './src/components/AppContainer';
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <NewAppScreen templateFileName="App.tsx" />
-    </View>
+    <AppProvider>
+      <View style={styles.container}>
+        <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+        <AppContainer />
+      </View>
+    </AppProvider>
   );
 }
 
