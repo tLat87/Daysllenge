@@ -8,6 +8,7 @@ import {
   StatusBar,
   Share,
   Alert,
+  Image,
 } from 'react-native';
 import { useApp } from '../context/AppContext';
 import ChallengeProgress from '../components/ChallengeProgress';
@@ -122,17 +123,27 @@ const HomeScreen: React.FC = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
       
-      {/* Header */}
+      {/* Header with Profile */}
       <View style={styles.header}>
-        <Text style={styles.greeting}>Hello, {state.user.name}</Text>
-        <View style={styles.headerIcons}>
-          <TouchableOpacity style={styles.iconButton}>
-            <Text style={styles.icon}>👤</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
-            <Text style={styles.icon}>💬</Text>
-          </TouchableOpacity>
+        <View style={styles.profileSection}>
+          <View style={styles.profileImageContainer}>
+            {state.user.profilePicture ? (
+              <Image 
+                source={{ uri: state.user.profilePicture }} 
+                style={styles.profileImage}
+                resizeMode="cover"
+              />
+            ) : (
+              <View style={styles.profileImagePlaceholder}>
+                <Text style={styles.profileImageText}>👤</Text>
+              </View>
+            )}
+          </View>
+          <Text style={styles.greeting}>Hello, {state.user.name}</Text>
         </View>
+        <TouchableOpacity style={styles.statsIconButton}>
+          <Text style={styles.statsIcon}>📊</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Main Challenge Card */}
@@ -143,14 +154,20 @@ const HomeScreen: React.FC = () => {
           
           {!state.currentChallenge.isAccepted ? (
             <>
-              <Text style={styles.timerText}>Time to complete: {timeLeft}</Text>
+              <View style={styles.timerContainer}>
+                <Text style={styles.timerLabel}>Until the end of the challenge:</Text>
+                <Text style={styles.timerValue}>{timeLeft}</Text>
+              </View>
               <TouchableOpacity style={styles.acceptButton} onPress={handleAcceptChallenge}>
-                <Text style={styles.acceptButtonText}>Accept Challenge</Text>
+                <Text style={styles.acceptButtonText}>Accept the challenge</Text>
               </TouchableOpacity>
             </>
           ) : !state.currentChallenge.isCompleted ? (
             <>
-              <Text style={styles.timerText}>Time remaining: {timeLeft}</Text>
+              <View style={styles.timerContainer}>
+                <Text style={styles.timerLabel}>Time remaining:</Text>
+                <Text style={styles.timerValue}>{timeLeft}</Text>
+              </View>
               <TouchableOpacity style={styles.completeButton} onPress={handleCompleteChallenge}>
                 <Text style={styles.completeButtonText}>Complete Challenge</Text>
               </TouchableOpacity>
@@ -170,13 +187,15 @@ const HomeScreen: React.FC = () => {
       )}
 
       {/* Motivation Card */}
-      <View style={styles.motivationCard}>
+      <View style={styles.motivationSection}>
         <Text style={styles.motivationTitle}>Motivation for the day:</Text>
-        <Text style={styles.motivationText}>{state.motivations[0]?.text}</Text>
-        <TouchableOpacity style={styles.shareButton} onPress={handleShareMotivation}>
-          <Text style={styles.shareIcon}>📤</Text>
-          <Text style={styles.shareText}>Share</Text>
-        </TouchableOpacity>
+        <View style={styles.motivationCard}>
+          <Text style={styles.motivationText}>{state.motivations[0]?.text}</Text>
+          <TouchableOpacity style={styles.motivationShareButton} onPress={handleShareMotivation}>
+            <Text style={styles.motivationShareIcon}>↗</Text>
+            <Text style={styles.motivationShareText}>Share</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* New Badge Modal */}
@@ -206,22 +225,47 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 15,
   },
-  greeting: {
-    ...textStyles.subtitle,
-    color: '#000000',
-  },
-  headerIcons: {
+  profileSection: {
     flexDirection: 'row',
-    gap: 15,
+    alignItems: 'center',
   },
-  iconButton: {
-    width: 30,
-    height: 30,
+  profileImageContainer: {
+    marginRight: 15,
+  },
+  profileImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  profileImagePlaceholder: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#e0e0e0',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  icon: {
+  profileImageText: {
+    fontSize: 25,
+  },
+  greeting: {
+    ...textStyles.subtitle,
+    color: '#000000',
+    fontWeight: 'bold',
+  },
+  statsIconButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: '#FF0000',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+  },
+  statsIcon: {
     fontSize: 20,
+    color: '#FF0000',
   },
   challengeCard: {
     backgroundColor: '#FF0000',
@@ -234,16 +278,30 @@ const styles = StyleSheet.create({
     ...textStyles.body,
     color: '#ffffff',
     marginBottom: 8,
+    fontWeight: 'bold',
   },
   challengeDescription: {
     ...textStyles.subtitle,
     color: '#ffffff',
     marginBottom: 15,
   },
-  timerText: {
-    ...textStyles.caption,
-    color: '#ffffff',
+  timerContainer: {
+    backgroundColor: '#ffffff',
+    borderRadius: 8,
+    padding: 12,
     marginBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  timerLabel: {
+    ...textStyles.caption,
+    color: '#000000',
+  },
+  timerValue: {
+    ...textStyles.caption,
+    color: '#000000',
+    fontWeight: 'bold',
   },
   acceptButton: {
     backgroundColor: '#ffffff',
@@ -276,24 +334,29 @@ const styles = StyleSheet.create({
     ...textStyles.body,
     color: '#ffffff',
   },
-  motivationCard: {
-    backgroundColor: '#ffffff',
-    borderColor: '#FF0000',
-    borderWidth: 2,
+  motivationSection: {
     marginHorizontal: 20,
     marginVertical: 10,
-    padding: 20,
-    borderRadius: 12,
   },
   motivationTitle: {
-    ...textStyles.body,
+    ...textStyles.subtitle,
     color: '#000000',
-    marginBottom: 8,
+    marginBottom: 10,
+    fontWeight: 'bold',
+  },
+  motivationCard: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 12,
+    padding: 20,
   },
   motivationText: {
     ...textStyles.body,
-    color: '#000000',
+    color: '#FF0000',
     marginBottom: 15,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
   },
   shareButton: {
     flexDirection: 'row',
@@ -312,6 +375,25 @@ const styles = StyleSheet.create({
   shareText: {
     ...textStyles.caption,
     color: '#ffffff',
+  },
+  motivationShareButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FF0000',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignSelf: 'center',
+  },
+  motivationShareIcon: {
+    fontSize: 16,
+    color: '#ffffff',
+    marginRight: 8,
+  },
+  motivationShareText: {
+    ...textStyles.caption,
+    color: '#ffffff',
+    fontWeight: 'bold',
   },
 });
 

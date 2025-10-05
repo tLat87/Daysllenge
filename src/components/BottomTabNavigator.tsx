@@ -11,35 +11,34 @@ const BottomTabNavigator: React.FC<BottomTabNavigatorProps> = ({ activeTab, onTa
   const tabs = [
     { key: 'home', icon: require('../assets/img/Home.png'), label: 'Home' },
     { key: 'challenges', icon: require('../assets/img/Power.png'), label: 'Challenges' },
-    { key: 'stats', icon: require('../assets/img/stat.png'), label: 'Stats' },
     { key: 'badges', icon: require('../assets/img/Done.png'), label: 'Badges' },
     { key: 'settings', icon: require('../assets/img/Set.png'), label: 'Settings' },
   ];
 
   return (
     <View style={styles.container}>
-      {tabs.map((tab) => (
-        <TouchableOpacity
-          key={tab.key}
-          style={styles.tab}
-          onPress={() => onTabPress(tab.key)}
-        >
-          <Image 
-            source={tab.icon} 
-            style={[
+      {/* Logo Section */}
+      <View style={styles.logoContainer}>
+        <Image source={require('../assets/img/150.png')} style={{width: 50, height: 50}} />
+      </View>
+      
+      {/* Navigation Icons */}
+      <View style={styles.navigationContainer}>
+        {tabs.map((tab) => (
+          <TouchableOpacity
+            key={tab.key}
+            style={styles.tab}
+            onPress={() => onTabPress(tab.key)}
+          >
+            {/* <Text style={[
               styles.tabIcon,
               activeTab === tab.key && styles.activeTabIcon
-            ]} 
-            resizeMode="contain"
-          />
-          {/* <Text style={[
-            styles.tabLabel,
-            activeTab === tab.key && styles.activeTabLabel
-          ]}>
-            {tab.label}
-          </Text> */}
-        </TouchableOpacity>
-      ))}
+            ]}> */}
+              <Image source={tab.icon} style={{width: 24, height: 24, resizeMode: 'contain'}} />
+            {/* </Text> */}
+          </TouchableOpacity>
+        ))}
+      </View>
     </View>
   );
 };
@@ -48,11 +47,10 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     backgroundColor: '#ffffff',
-    paddingVertical: 10,
-    height: 70,
+    paddingVertical: 15,
     paddingHorizontal: 20,
     borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
+    borderTopColor: '#e0e0e0',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -61,29 +59,40 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
     elevation: 5,
+    alignItems: 'center',
+  },
+  logoContainer: {
+    marginRight: 20,
+  },
+  logoBox: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 8,
+    padding: 8,
+    alignItems: 'center',
+  },
+  logoText: {
+    ...textStyles.caption,
+    color: '#FF0000',
+    fontWeight: 'bold',
+    lineHeight: 12,
+  },
+  navigationContainer: {
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'space-around',
   },
   tab: {
-    flex: 1,
     alignItems: 'center',
     paddingVertical: 5,
+    paddingHorizontal: 10,
   },
   tabIcon: {
-    width: 24,
-    height: 24,
-    marginBottom: 4,
-    opacity: 0.5,
-    tintColor: '#666666',
+    fontSize: 24,
+    color: '#999999',
   },
   activeTabIcon: {
-    opacity: 1,
-    tintColor: '#FF0000',
-  },
-  tabLabel: {
-    ...textStyles.small,
-    color: '#666666',
-  },
-  activeTabLabel: {
-    ...textStyles.small,
     color: '#FF0000',
   },
 });

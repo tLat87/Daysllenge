@@ -171,7 +171,7 @@ const SettingsScreen: React.FC = () => {
 
   const renderSettingsTab = () => (
     <View style={styles.tabContent}>
-      <View style={styles.settingItem}>
+      {/* <View style={styles.settingItem}>
         <Text style={styles.settingLabel}>Notifications</Text>
         <Switch
           value={state.notificationsEnabled}
@@ -179,7 +179,7 @@ const SettingsScreen: React.FC = () => {
           trackColor={{ false: '#767577', true: '#FF0000' }}
           thumbColor={state.notificationsEnabled ? '#ffffff' : '#f4f3f4'}
         />
-      </View>
+      </View> */}
       
       <View style={styles.settingItem}>
         <Text style={styles.settingLabel}>Reset progress</Text>

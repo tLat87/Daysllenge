@@ -3,7 +3,6 @@ import { View, StyleSheet } from 'react-native';
 import BottomTabNavigator from './BottomTabNavigator';
 import HomeScreen from '../screens/HomeScreen';
 import ChallengesScreen from '../screens/ChallengesScreen';
-import StatsScreen from '../screens/StatsScreen';
 import BadgesScreen from '../screens/BadgesScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
@@ -16,8 +15,6 @@ const MainNavigator: React.FC = () => {
         return <HomeScreen />;
       case 'challenges':
         return <ChallengesScreen />;
-      case 'stats':
-        return <StatsScreen />;
       case 'badges':
         return <BadgesScreen />;
       case 'settings':
