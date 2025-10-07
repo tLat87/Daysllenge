@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { textStyles } from '../utils/fontUtils';
+import { COLORS } from '../constants';
 
 interface BottomTabNavigatorProps {
   activeTab: string;
@@ -11,6 +12,9 @@ const BottomTabNavigator: React.FC<BottomTabNavigatorProps> = ({ activeTab, onTa
   const tabs = [
     { key: 'home', icon: require('../assets/img/Home.png'), label: 'Home' },
     { key: 'challenges', icon: require('../assets/img/Power.png'), label: 'Challenges' },
+    { key: 'achievements', icon: '🏆', label: 'Achievements' },
+    { key: 'leaderboard', icon: '📊', label: 'Ranking' },
+    { key: 'notifications', icon: '🔔', label: 'Alerts' },
     { key: 'badges', icon: require('../assets/img/Done.png'), label: 'Badges' },
     { key: 'settings', icon: require('../assets/img/Set.png'), label: 'Settings' },
   ];
@@ -27,15 +31,31 @@ const BottomTabNavigator: React.FC<BottomTabNavigatorProps> = ({ activeTab, onTa
         {tabs.map((tab) => (
           <TouchableOpacity
             key={tab.key}
-            style={styles.tab}
+            style={[styles.tab, activeTab === tab.key && styles.activeTab]}
             onPress={() => onTabPress(tab.key)}
           >
-            {/* <Text style={[
-              styles.tabIcon,
-              activeTab === tab.key && styles.activeTabIcon
-            ]}> */}
-              <Image source={tab.icon} style={{width: 24, height: 24, resizeMode: 'contain'}} />
-            {/* </Text> */}
+            {typeof tab.icon === 'string' ? (
+              <Text style={[
+                styles.tabIcon,
+                activeTab === tab.key && styles.activeTabIcon
+              ]}>
+                {tab.icon}
+              </Text>
+            ) : (
+              <Image 
+                source={tab.icon} 
+                style={[
+                  styles.tabImage,
+                  activeTab === tab.key && styles.activeTabImage
+                ]} 
+              />
+            )}
+            <Text style={[
+              styles.tabLabel,
+              activeTab === tab.key && styles.activeTabLabel
+            ]}>
+              {tab.label}
+            </Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -46,35 +66,35 @@ const BottomTabNavigator: React.FC<BottomTabNavigatorProps> = ({ activeTab, onTa
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: '#ffffff',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
-    shadowColor: '#000',
+    backgroundColor: COLORS.background,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderTopWidth: 2,
+    borderTopColor: COLORS.borderRed,
+    shadowColor: COLORS.shadow,
     shadowOffset: {
       width: 0,
-      height: -2,
+      height: -4,
     },
     shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowRadius: 8,
+    elevation: 8,
     alignItems: 'center',
   },
   logoContainer: {
-    marginRight: 20,
+    marginRight: 16,
   },
   logoBox: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    borderRadius: 8,
+    backgroundColor: COLORS.background,
+    borderWidth: 2,
+    borderColor: COLORS.borderRed,
+    borderRadius: 12,
     padding: 8,
     alignItems: 'center',
   },
   logoText: {
     ...textStyles.caption,
-    color: '#FF0000',
+    color: COLORS.primary,
     fontWeight: 'bold',
     lineHeight: 12,
   },
@@ -85,15 +105,41 @@ const styles = StyleSheet.create({
   },
   tab: {
     alignItems: 'center',
-    paddingVertical: 5,
-    paddingHorizontal: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 6,
+    borderRadius: 8,
+    minWidth: 60,
+  },
+  activeTab: {
+    backgroundColor: COLORS.backgroundSecondary,
   },
   tabIcon: {
-    fontSize: 24,
-    color: '#999999',
+    fontSize: 20,
+    color: COLORS.textSecondary,
+    marginBottom: 4,
   },
   activeTabIcon: {
-    color: '#FF0000',
+    color: COLORS.primary,
+  },
+  tabImage: {
+    width: 20,
+    height: 20,
+    resizeMode: 'contain',
+    marginBottom: 4,
+    tintColor: COLORS.textSecondary,
+  },
+  activeTabImage: {
+    tintColor: COLORS.primary,
+  },
+  tabLabel: {
+    ...textStyles.small,
+    color: COLORS.textSecondary,
+    textAlign: 'center',
+    fontSize: 10,
+  },
+  activeTabLabel: {
+    color: COLORS.primary,
+    fontWeight: 'bold',
   },
 });
 

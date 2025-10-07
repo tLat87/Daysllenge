@@ -30,12 +30,69 @@ export interface User {
   timeInApp: number; // в часах
   numberOfDays: number;
   profilePicture?: string;
+  level: number;
+  experience: number;
+  experienceToNextLevel: number;
+  totalExperience: number;
+  streak: number; // текущая серия дней
+  longestStreak: number; // самая длинная серия
+  rank: 'Bronze' | 'Silver' | 'Gold' | 'Platinum' | 'Diamond';
+  points: number;
 }
 
 export interface Motivation {
   id: string;
   text: string;
   date: Date;
+}
+
+export interface DailyQuest {
+  id: string;
+  title: string;
+  description: string;
+  type: 'exercise' | 'streak' | 'time' | 'social';
+  target: number;
+  current: number;
+  reward: {
+    experience: number;
+    points: number;
+    badge?: Badge;
+  };
+  isCompleted: boolean;
+  expiresAt: Date;
+}
+
+export interface Achievement {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  category: 'streak' | 'challenges' | 'time' | 'social' | 'special';
+  requirement: number;
+  current: number;
+  isUnlocked: boolean;
+  unlockedAt?: Date;
+  rarity: 'common' | 'rare' | 'epic' | 'legendary';
+}
+
+export interface LeaderboardEntry {
+  id: string;
+  name: string;
+  profilePicture?: string;
+  points: number;
+  level: number;
+  rank: number;
+  streak: number;
+}
+
+export interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  type: 'reminder' | 'achievement' | 'quest' | 'streak' | 'social';
+  isRead: boolean;
+  createdAt: Date;
+  actionUrl?: string;
 }
 
 export interface AppState {
@@ -47,6 +104,12 @@ export interface AppState {
   notificationsEnabled: boolean;
   hasCompletedOnboarding: boolean;
   hasCompletedProfileRegistration: boolean;
+  dailyQuests: DailyQuest[];
+  achievements: Achievement[];
+  leaderboard: LeaderboardEntry[];
+  notifications: Notification[];
+  currentStreak: number;
+  lastActivityDate?: Date;
 }
 
 export type RootStackParamList = {

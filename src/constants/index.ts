@@ -1,14 +1,27 @@
 export const COLORS = {
   primary: '#FF0000',
+  primaryDark: '#CC0000',
+  primaryLight: '#FF3333',
   secondary: '#ffffff',
   background: '#ffffff',
+  backgroundSecondary: '#FFF5F5',
   text: '#000000',
   textSecondary: '#666666',
+  textLight: '#999999',
   border: '#f0f0f0',
+  borderRed: '#FFE0E0',
   shadow: '#000000',
   success: '#4CAF50',
   warning: '#FF9800',
   error: '#F44336',
+  gold: '#FFD700',
+  silver: '#C0C0C0',
+  bronze: '#CD7F32',
+  gradient: {
+    red: ['#FF0000', '#FF3333'],
+    redDark: ['#CC0000', '#FF0000'],
+    gold: ['#FFD700', '#FFA500'],
+  },
 };
 
 export const SIZES = {

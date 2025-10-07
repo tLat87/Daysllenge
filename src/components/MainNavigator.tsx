@@ -3,8 +3,12 @@ import { View, StyleSheet } from 'react-native';
 import BottomTabNavigator from './BottomTabNavigator';
 import HomeScreen from '../screens/HomeScreen';
 import ChallengesScreen from '../screens/ChallengesScreen';
+import AchievementsScreen from '../screens/AchievementsScreen';
+import LeaderboardScreen from '../screens/LeaderboardScreen';
+import NotificationsScreen from '../screens/NotificationsScreen';
 import BadgesScreen from '../screens/BadgesScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import { COLORS } from '../constants';
 
 const MainNavigator: React.FC = () => {
   const [activeTab, setActiveTab] = useState('home');
@@ -15,6 +19,12 @@ const MainNavigator: React.FC = () => {
         return <HomeScreen />;
       case 'challenges':
         return <ChallengesScreen />;
+      case 'achievements':
+        return <AchievementsScreen />;
+      case 'leaderboard':
+        return <LeaderboardScreen />;
+      case 'notifications':
+        return <NotificationsScreen />;
       case 'badges':
         return <BadgesScreen />;
       case 'settings':
@@ -37,7 +47,7 @@ const MainNavigator: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: COLORS.background,
   },
   screenContainer: {
     flex: 1,
