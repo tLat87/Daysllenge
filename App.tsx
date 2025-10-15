@@ -1,6 +1,6 @@
 /**
- * 2Days Sport Challenge App
- * A simple and motivating way to add sport to your life
+ * LinguaQuest Language Learning App
+ * A simple and motivating way to learn new languages
  *
  * @format
  */

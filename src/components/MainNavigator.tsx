@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import BottomTabNavigator from './BottomTabNavigator';
 import HomeScreen from '../screens/HomeScreen';
 import ChallengesScreen from '../screens/ChallengesScreen';
+import VocabularyScreen from '../screens/VocabularyScreen';
 import AchievementsScreen from '../screens/AchievementsScreen';
 import LeaderboardScreen from '../screens/LeaderboardScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
@@ -17,8 +18,10 @@ const MainNavigator: React.FC = () => {
     switch (activeTab) {
       case 'home':
         return <HomeScreen />;
-      case 'challenges':
+      case 'lessons':
         return <ChallengesScreen />;
+      case 'vocabulary':
+        return <VocabularyScreen />;
       case 'achievements':
         return <AchievementsScreen />;
       case 'leaderboard':

@@ -11,7 +11,8 @@ interface BottomTabNavigatorProps {
 const BottomTabNavigator: React.FC<BottomTabNavigatorProps> = ({ activeTab, onTabPress }) => {
   const tabs = [
     { key: 'home', icon: require('../assets/img/Home.png'), label: 'Home' },
-    { key: 'challenges', icon: require('../assets/img/Power.png'), label: 'Challenges' },
+    { key: 'lessons', icon: require('../assets/img/Power.png'), label: 'Lessons' },
+    { key: 'vocabulary', icon: '📚', label: 'Vocabulary' },
     { key: 'achievements', icon: '🏆', label: 'Achievements' },
     { key: 'leaderboard', icon: '📊', label: 'Ranking' },
     { key: 'notifications', icon: '🔔', label: 'Alerts' },

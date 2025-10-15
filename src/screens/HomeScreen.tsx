@@ -23,15 +23,15 @@ import { COLORS } from '../constants';
 const HomeScreen: React.FC = () => {
   const { state, dispatch } = useApp();
   const [timeLeft, setTimeLeft] = useState<string>('');
-  const [challengeProgress, setChallengeProgress] = useState<number>(0);
+  const [lessonProgress, setLessonProgress] = useState<number>(0);
   const [showNewBadgeModal, setShowNewBadgeModal] = useState<boolean>(false);
   const [newBadge, setNewBadge] = useState<any>(null);
 
   useEffect(() => {
-    if (state.currentChallenge) {
+    if (state.currentLesson) {
       const timer = setInterval(() => {
         const now = new Date().getTime();
-        const endTime = state.currentChallenge!.endDate!.getTime();
+        const endTime = state.currentLesson!.endDate!.getTime();
         const diff = endTime - now;
 
         if (diff > 0) {
@@ -46,76 +46,79 @@ const HomeScreen: React.FC = () => {
 
       return () => clearInterval(timer);
     }
-  }, [state.currentChallenge]);
+  }, [state.currentLesson]);
 
-  const handleAcceptChallenge = () => {
-    if (state.currentChallenge && !state.currentChallenge.isAccepted) {
-      // Mark challenge as accepted
-      const acceptedChallenge = {
-        ...state.currentChallenge,
-        isAccepted: true,
-        acceptedAt: new Date(),
+  const handleStartLesson = () => {
+    if (state.currentLesson && !state.currentLesson.isStarted) {
+      // Mark lesson as started
+      const startedLesson = {
+        ...state.currentLesson,
+        isStarted: true,
+        startedAt: new Date(),
       };
-      dispatch({ type: 'SET_CURRENT_CHALLENGE', payload: acceptedChallenge });
-      Alert.alert('Challenge Accepted!', 'You have accepted the challenge. Good luck!');
+      dispatch({ type: 'SET_CURRENT_LESSON', payload: startedLesson });
+      Alert.alert('Lesson Started!', 'You have started the lesson. Good luck with your learning!');
     }
   };
 
-  const handleCompleteChallenge = () => {
-    if (state.currentChallenge && state.currentChallenge.isAccepted) {
+  const handleCompleteLesson = () => {
+    if (state.currentLesson && state.currentLesson.isStarted) {
       Alert.alert(
-        'Complete Challenge',
-        'Are you sure you want to mark this challenge as completed?',
+        'Complete Lesson',
+        'Are you sure you want to mark this lesson as completed?',
         [
           { text: 'Cancel', style: 'cancel' },
           {
             text: 'Complete',
             onPress: () => {
-              const completedChallenge = {
-                ...state.currentChallenge,
-                isCompleted: true,
-                completedAt: new Date(),
-                actualDuration: state.currentChallenge.duration, // Use the planned duration
-              };
-              dispatch({ type: 'COMPLETE_CHALLENGE', payload: completedChallenge });
-              
-              // Add experience and points
-              const experienceGained = 50 + Math.floor(state.currentChallenge.duration / 5);
-              dispatch({ type: 'ADD_EXPERIENCE', payload: experienceGained });
-              
-              // Update streak
-              const newStreak = state.user.streak + 1;
-              dispatch({ type: 'UPDATE_STREAK', payload: newStreak });
-              
-              // Check for quest completion
-              const activeQuests = state.dailyQuests.filter(quest => !quest.isCompleted);
-              activeQuests.forEach(quest => {
-                if (quest.type === 'exercise' && quest.current < quest.target) {
-                  const updatedQuest = { ...quest, current: quest.current + 1 };
-                  if (updatedQuest.current >= quest.target) {
-                    dispatch({ type: 'COMPLETE_QUEST', payload: updatedQuest });
-                    dispatch({ type: 'ADD_EXPERIENCE', payload: quest.reward.experience });
+              if (state.currentLesson) {
+                const completedLesson = {
+                  ...state.currentLesson,
+                  isCompleted: true,
+                  completedAt: new Date(),
+                  actualDuration: state.currentLesson.duration, // Use the planned duration
+                  wordsLearned: state.currentLesson.totalWords, // Mark all words as learned
+                };
+                dispatch({ type: 'COMPLETE_LESSON', payload: completedLesson });
+                
+                // Add experience and points
+                const experienceGained = 50 + Math.floor(state.currentLesson.duration / 5);
+                dispatch({ type: 'ADD_EXPERIENCE', payload: experienceGained });
+                
+                // Update streak
+                const newStreak = state.user.streak + 1;
+                dispatch({ type: 'UPDATE_STREAK', payload: newStreak });
+                
+                // Check for quest completion
+                const activeQuests = state.dailyQuests.filter(quest => !quest.isCompleted);
+                activeQuests.forEach(quest => {
+                  if (quest.type === 'lesson' && quest.current < quest.target) {
+                    const updatedQuest = { ...quest, current: quest.current + 1 };
+                    if (updatedQuest.current >= quest.target) {
+                      dispatch({ type: 'COMPLETE_QUEST', payload: updatedQuest });
+                      dispatch({ type: 'ADD_EXPERIENCE', payload: quest.reward.experience });
+                    }
                   }
+                });
+                
+                // Check for achievements
+                const newCompletedCount = state.completedLessons.length + 1;
+                const firstStepsAchievement = state.achievements.find(a => a.id === '1');
+                if (firstStepsAchievement && !firstStepsAchievement.isUnlocked && newCompletedCount >= firstStepsAchievement.requirement) {
+                  dispatch({ type: 'UNLOCK_ACHIEVEMENT', payload: firstStepsAchievement });
                 }
-              });
-              
-              // Check for achievements
-              const newCompletedCount = state.completedChallenges.length + 1;
-              const firstStepsAchievement = state.achievements.find(a => a.id === '1');
-              if (firstStepsAchievement && !firstStepsAchievement.isUnlocked && newCompletedCount >= firstStepsAchievement.requirement) {
-                dispatch({ type: 'UNLOCK_ACHIEVEMENT', payload: firstStepsAchievement });
-              }
-              
-              // Add badge for first completion
-              if (state.completedChallenges.length === 0) {
-                dispatch({ type: 'ADD_BADGE', payload: state.badges[0] });
-                setNewBadge(state.badges[0]);
-                setShowNewBadgeModal(true);
-              } else {
-                Alert.alert(
-                  'Congratulations!', 
-                  `You have completed the challenge!\n+${experienceGained} XP gained!`
-                );
+                
+                // Add badge for first completion
+                if (state.completedLessons.length === 0) {
+                  dispatch({ type: 'ADD_BADGE', payload: state.badges[0] });
+                  setNewBadge(state.badges[0]);
+                  setShowNewBadgeModal(true);
+                } else {
+                  Alert.alert(
+                    'Congratulations!', 
+                    `You have completed the lesson!\n+${experienceGained} XP gained!\n+${state.currentLesson.totalWords} words learned!`
+                  );
+                }
               }
             }
           }
@@ -124,11 +127,11 @@ const HomeScreen: React.FC = () => {
     }
   };
 
-  const handleShareChallenge = async () => {
+  const handleShareLesson = async () => {
     try {
       await Share.share({
-        message: `I completed the challenge: ${state.currentChallenge?.title}`,
-        title: '2Days Sport Challenge',
+        message: `I completed the lesson: ${state.currentLesson?.title}`,
+        title: 'LinguaQuest Language Learning',
       });
     } catch (error) {
       console.log('Error sharing:', error);
@@ -139,7 +142,7 @@ const HomeScreen: React.FC = () => {
     try {
       await Share.share({
         message: state.motivations[0]?.text || 'Daily motivation',
-        title: '2Days Sport Challenge',
+        title: 'LinguaQuest Language Learning',
       });
     } catch (error) {
       console.log('Error sharing:', error);
@@ -194,37 +197,39 @@ const HomeScreen: React.FC = () => {
         {/* User Level Card */}
         <UserLevelCard user={state.user} />
 
-        {/* Main Challenge Card */}
-        {state.currentChallenge && (
+        {/* Main Lesson Card */}
+        {state.currentLesson && (
           <View style={styles.challengeCard}>
-            <Text style={styles.challengeTitle}>2-day challenge:</Text>
-            <Text style={styles.challengeDescription}>{state.currentChallenge.title}</Text>
+            <Text style={styles.challengeTitle}>2-day lesson:</Text>
+            <Text style={styles.challengeDescription}>{state.currentLesson.title}</Text>
+            <Text style={styles.lessonLanguage}>Language: {state.currentLesson.language} • Level: {state.currentLesson.level}</Text>
+            <Text style={styles.lessonWords}>Words to learn: {state.currentLesson.wordsLearned}/{state.currentLesson.totalWords}</Text>
             
-            {!state.currentChallenge.isAccepted ? (
+            {!state.currentLesson.isStarted ? (
               <>
                 <AnimatedTimer 
                   timeLeft={timeLeft} 
                   isActive={false}
                 />
-                <TouchableOpacity style={styles.acceptButton} onPress={handleAcceptChallenge}>
-                  <Text style={styles.acceptButtonText}>Accept the challenge</Text>
+                <TouchableOpacity style={styles.acceptButton} onPress={handleStartLesson}>
+                  <Text style={styles.acceptButtonText}>Start the lesson</Text>
                 </TouchableOpacity>
               </>
-            ) : !state.currentChallenge.isCompleted ? (
+            ) : !state.currentLesson.isCompleted ? (
               <>
                 <AnimatedTimer 
                   timeLeft={timeLeft} 
                   isActive={true}
                 />
-                <TouchableOpacity style={styles.completeButton} onPress={handleCompleteChallenge}>
-                  <Text style={styles.completeButtonText}>Complete Challenge</Text>
+                <TouchableOpacity style={styles.completeButton} onPress={handleCompleteLesson}>
+                  <Text style={styles.completeButtonText}>Complete Lesson</Text>
                 </TouchableOpacity>
               </>
             ) : (
               <>
                 <View style={styles.completedContainer}>
-                  <Text style={styles.completedText}>✅ Challenge Completed!</Text>
-                  <TouchableOpacity style={styles.shareButton} onPress={handleShareChallenge}>
+                  <Text style={styles.completedText}>✅ Lesson Completed!</Text>
+                  <TouchableOpacity style={styles.shareButton} onPress={handleShareLesson}>
                     <Text style={styles.shareIcon}>📤</Text>
                     <Text style={styles.shareText}>Share Achievement</Text>
                   </TouchableOpacity>
@@ -362,7 +367,19 @@ const styles = StyleSheet.create({
   challengeDescription: {
     ...textStyles.subtitle,
     color: COLORS.background,
+    marginBottom: 8,
+  },
+  lessonLanguage: {
+    ...textStyles.caption,
+    color: COLORS.background,
+    marginBottom: 4,
+    opacity: 0.9,
+  },
+  lessonWords: {
+    ...textStyles.caption,
+    color: COLORS.background,
     marginBottom: 15,
+    opacity: 0.9,
   },
   timerContainer: {
     backgroundColor: COLORS.background,

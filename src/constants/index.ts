@@ -55,20 +55,22 @@ export const FONTS = {
   italic: 'DMMono-Italic',
 };
 
-export const CHALLENGE_DURATION = {
+export const LESSON_DURATION = {
   MINUTES: 60 * 1000,
   HOURS: 60 * 60 * 1000,
   DAYS: 24 * 60 * 60 * 1000,
 };
 
 export const APP_CONFIG = {
-  CHALLENGE_DURATION_DAYS: 2,
-  DEFAULT_CHALLENGE_DURATION_MINUTES: 10,
-  MAX_CHALLENGES_PER_DAY: 3,
+  LESSON_DURATION_DAYS: 2,
+  DEFAULT_LESSON_DURATION_MINUTES: 15,
+  MAX_LESSONS_PER_DAY: 3,
   BADGE_THRESHOLDS: {
-    FIRST_CHALLENGE: 1,
+    FIRST_LESSON: 1,
     WEEK_STREAK: 7,
     MONTH_STREAK: 30,
   },
+  LANGUAGES: ['English', 'Spanish', 'French', 'German', 'Italian', 'Portuguese', 'Russian', 'Chinese', 'Japanese', 'Korean'],
+  DIFFICULTY_LEVELS: ['beginner', 'intermediate', 'advanced'],
 };
 

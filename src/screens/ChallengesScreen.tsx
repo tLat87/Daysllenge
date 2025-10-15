@@ -16,10 +16,10 @@ import { textStyles } from '../utils/fontUtils';
 const ChallengesScreen: React.FC = () => {
   const { state, dispatch } = useApp();
 
-  const handleDeleteChallenge = (challengeId: string) => {
+  const handleDeleteLesson = (lessonId: string) => {
     Alert.alert(
-      'Delete challenge?',
-      'Are you sure you want to delete this challenge?',
+      'Delete lesson?',
+      'Are you sure you want to delete this lesson from your history?',
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -27,18 +27,18 @@ const ChallengesScreen: React.FC = () => {
           style: 'destructive',
           onPress: () => {
             // Здесь можно добавить логику удаления
-            console.log('Delete challenge:', challengeId);
+            console.log('Delete lesson:', lessonId);
           },
         },
       ]
     );
   };
 
-  const handleShareChallenge = async (challenge: any) => {
+  const handleShareLesson = async (lesson: any) => {
     try {
       await Share.share({
-        message: `I completed the challenge: ${challenge.title}`,
-        title: '2Days Sport Challenge',
+        message: `I completed the lesson: ${lesson.title} in ${lesson.language}`,
+        title: 'LinguaQuest Language Learning',
       });
     } catch (error) {
       console.log('Error sharing:', error);
@@ -53,10 +53,12 @@ const ChallengesScreen: React.FC = () => {
     });
   };
 
-  const renderChallengeItem = ({ item }: { item: any }) => (
+  const renderLessonItem = ({ item }: { item: any }) => (
     <View style={styles.challengeItem}>
       <View style={styles.challengeInfo}>
         <Text style={styles.challengeDescription}>{item.title}</Text>
+        <Text style={styles.lessonLanguage}>{item.language} • {item.level}</Text>
+        <Text style={styles.lessonWords}>Words learned: {item.wordsLearned}/{item.totalWords}</Text>
         <Text style={styles.completionDate}>
           Completed {formatDate(item.completedAt!)}
         </Text>
@@ -65,13 +67,13 @@ const ChallengesScreen: React.FC = () => {
       <View style={styles.challengeActions}>
         <TouchableOpacity
           style={styles.actionButton}
-          onPress={() => handleShareChallenge(item)}
+          onPress={() => handleShareLesson(item)}
         >
           <Text style={styles.actionIcon}>📤</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.actionButton}
-          onPress={() => handleDeleteChallenge(item.id)}
+          onPress={() => handleDeleteLesson(item.id)}
         >
           <Text style={styles.actionIcon}>🗑️</Text>
         </TouchableOpacity>
@@ -84,18 +86,18 @@ const ChallengesScreen: React.FC = () => {
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
       
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Completed challenges</Text>
+        <Text style={styles.headerTitle}>Completed lessons</Text>
       </View>
 
-      {state.completedChallenges.length === 0 ? (
+      {state.completedLessons.length === 0 ? (
         <View style={styles.emptyState}>
-          <Text style={styles.emptyText}>No completed challenges yet</Text>
-          <Text style={styles.emptySubtext}>Complete your first challenge to see it here!</Text>
+          <Text style={styles.emptyText}>No completed lessons yet</Text>
+          <Text style={styles.emptySubtext}>Complete your first lesson to see it here!</Text>
         </View>
       ) : (
         <FlatList
-          data={state.completedChallenges}
-          renderItem={renderChallengeItem}
+          data={state.completedLessons}
+          renderItem={renderLessonItem}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContainer}
         />
@@ -144,6 +146,17 @@ const styles = StyleSheet.create({
   challengeDescription: {
     ...textStyles.body,
     color: '#000000',
+    marginBottom: 4,
+  },
+  lessonLanguage: {
+    ...textStyles.caption,
+    color: '#FF0000',
+    marginBottom: 2,
+    fontWeight: 'bold',
+  },
+  lessonWords: {
+    ...textStyles.caption,
+    color: '#666666',
     marginBottom: 8,
   },
   completionDate: {

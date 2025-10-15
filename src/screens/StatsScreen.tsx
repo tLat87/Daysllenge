@@ -16,12 +16,13 @@ import { textStyles } from '../utils/fontUtils';
 const StatsScreen: React.FC = () => {
   const { state } = useApp();
 
-  const totalChallenges = state.completedChallenges.length;
+  const totalLessons = state.completedLessons.length;
   const totalBadges = state.badges.filter(badge => badge.isReceived).length;
-  const totalTimeSpent = state.completedChallenges.reduce((total, challenge) => {
-    return total + (challenge.actualDuration || challenge.duration);
+  const totalTimeSpent = state.completedLessons.reduce((total, lesson) => {
+    return total + (lesson.actualDuration || lesson.duration);
   }, 0);
-  const averageTime = totalChallenges > 0 ? Math.round(totalTimeSpent / totalChallenges) : 0;
+  const averageTime = totalLessons > 0 ? Math.round(totalTimeSpent / totalLessons) : 0;
+  const totalWordsLearned = state.user.wordsLearned;
 
   const calculateDaysActive = () => {
     if (!state.user.registrationDate) return 0;
@@ -33,30 +34,31 @@ const StatsScreen: React.FC = () => {
   };
 
   const calculateTimeInApp = () => {
-    // Calculate based on completed challenges and their durations
-    const challengeTime = state.completedChallenges.reduce((total, challenge) => {
-      return total + (challenge.actualDuration || challenge.duration);
+    // Calculate based on completed lessons and their durations
+    const lessonTime = state.completedLessons.reduce((total, lesson) => {
+      return total + (lesson.actualDuration || lesson.duration);
     }, 0);
     
     // Add some base time for app usage (browsing, settings, etc.)
-    const baseTime = state.completedChallenges.length * 5; // 5 minutes per challenge for app usage
+    const baseTime = state.completedLessons.length * 5; // 5 minutes per lesson for app usage
     
-    return challengeTime + baseTime;
+    return lessonTime + baseTime;
   };
 
   const handleShareStatistics = async () => {
     try {
-      const message = `My 2Days Sport Challenge Statistics:
-• Completed Challenges: ${totalChallenges}
+      const message = `My LinguaQuest Language Learning Statistics:
+• Completed Lessons: ${totalLessons}
+• Words Learned: ${totalWordsLearned}
 • Awards Received: ${totalBadges}
 • Days Active: ${calculateDaysActive()}
-• Challenge Progress: ${totalChallenges}/15
+• Learning Progress: ${totalLessons}/15
 
-Keep pushing yourself! 💪`;
+Keep learning! 📚`;
 
       await Share.share({
         message: message,
-        title: '2Days Sport Challenge Statistics',
+        title: 'LinguaQuest Language Learning Statistics',
       });
     } catch (error) {
       console.log('Error sharing statistics:', error);
@@ -98,8 +100,12 @@ Keep pushing yourself! 💪`;
         {/* Statistics Summary Card */}
         <View style={styles.statsCard}>
           <View style={styles.statRow}>
-            <Text style={styles.statLabel}>Number of completed challenges:</Text>
-            <Text style={styles.statValue}>{totalChallenges}</Text>
+            <Text style={styles.statLabel}>Number of completed lessons:</Text>
+            <Text style={styles.statValue}>{totalLessons}</Text>
+          </View>
+          <View style={styles.statRow}>
+            <Text style={styles.statLabel}>Words learned:</Text>
+            <Text style={styles.statValue}>{totalWordsLearned}</Text>
           </View>
           <View style={styles.statRow}>
             <Text style={styles.statLabel}>Number of awards received:</Text>
@@ -111,14 +117,24 @@ Keep pushing yourself! 💪`;
           </View>
         </View>
 
-        {/* Challenge Progress Card */}
+        {/* Learning Progress Card */}
         <View style={styles.progressCard}>
           <View style={styles.progressContainer}>
             <View style={styles.progressCircle}>
-              <Text style={styles.progressText}>{totalChallenges}/15</Text>
+              <Text style={styles.progressText}>{totalLessons}/15</Text>
             </View>
           </View>
-          <Text style={styles.progressLabel}>Challenge progress</Text>
+          <Text style={styles.progressLabel}>Learning progress</Text>
+        </View>
+
+        {/* Language Progress Card */}
+        <View style={styles.progressCard}>
+          <View style={styles.progressContainer}>
+            <View style={styles.progressCircle}>
+              <Text style={styles.progressText}>{state.user.currentLanguage}</Text>
+            </View>
+          </View>
+          <Text style={styles.progressLabel}>Current language</Text>
         </View>
       </ScrollView>
 

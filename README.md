@@ -1,128 +1,113 @@
-# 2Days Sport Challenge
+# LinguaQuest - Language Learning App
 
-Простое и мотивирующее приложение для добавления спорта в вашу жизнь. Выполняйте короткие 2-дневные челленджи, получайте награды и создавайте здоровые привычки без ущерба для здоровья.
+A modern React Native application for learning new languages through interactive lessons and vocabulary building.
 
-## Особенности
+## Features
 
-- **2-дневные челленджи** - простые и безопасные задачи для всех
-- **Награды и бейджи** за каждую победу
-- **Статистика** которая показывает ваш путь и прогресс
-- **Умные напоминания** которые не дадут забыть о втором дне
-- **Минимальная регистрация** - быстрое начало
+### 🏠 Home Screen
+- Daily language lessons with 2-day completion windows
+- Progress tracking for current lesson
+- User level and experience system
+- Daily quests and motivation quotes
 
-## Что вас ждет
+### 📚 Lessons Screen
+- View completed language lessons
+- Track learning progress across different languages
+- Share achievements with friends
+- Lesson history and statistics
 
-Вы будете удивлены, насколько легко создать новую привычку, когда все начинается с двух дней.
-Начните сегодня - и посмотрите, где вы будете завтра.
+### 📖 Vocabulary Screen
+- Personal vocabulary collection
+- Word learning progress tracking
+- Filter by learned/learning status
+- Review and practice learned words
 
-## Установка и запуск
+### 📊 Statistics Screen
+- Learning progress overview
+- Words learned counter
+- Streak tracking
+- Achievement badges
+- Share learning statistics
 
-### Предварительные требования
+### 🏆 Achievements & Badges
+- Unlock achievements for learning milestones
+- Collect badges for different accomplishments
+- Progress tracking for various learning goals
 
-- Node.js (>= 18)
-- React Native CLI
-- Android Studio (для Android)
-- Xcode (для iOS)
+## Technology Stack
 
-### Установка
+- **React Native 0.80.0** - Cross-platform mobile development
+- **TypeScript** - Type-safe development
+- **React Navigation** - Navigation between screens
+- **Context API** - State management
+- **Vector Icons** - Icon system
 
-1. Клонируйте репозиторий:
-```bash
-git clone <repository-url>
-cd Daysllenge
-```
+## Key Features
 
-2. Установите зависимости:
-```bash
-npm install
-```
+### Language Learning System
+- **Multi-language support**: English, Spanish, French, German, Italian, Portuguese, Russian, Chinese, Japanese, Korean
+- **Difficulty levels**: Beginner, Intermediate, Advanced
+- **2-day lesson format**: Complete lessons within 2 days for optimal learning retention
+- **Vocabulary tracking**: Learn and review words with progress tracking
 
-3. Для iOS установите CocoaPods:
-```bash
-cd ios && pod install && cd ..
-```
+### Gamification
+- **Experience points**: Earn XP for completing lessons
+- **Level system**: Progress through learning levels
+- **Streak tracking**: Maintain daily learning streaks
+- **Achievement system**: Unlock badges and achievements
+- **Daily quests**: Complete daily learning challenges
 
-### Запуск
+### User Experience
+- **Clean, modern UI**: Red and white color scheme with intuitive design
+- **Progress visualization**: Visual progress bars and statistics
+- **Motivational quotes**: Daily inspiration for language learning
+- **Social sharing**: Share achievements and progress
 
-#### Android
-```bash
-npm run android
-```
-
-#### iOS
-```bash
-npm run ios
-```
-
-## Структура проекта
+## App Structure
 
 ```
 src/
-├── components/          # Переиспользуемые компоненты
-│   ├── BadgeCard.tsx
-│   ├── BottomTabNavigator.tsx
-│   ├── ChallengeProgress.tsx
-│   ├── MainNavigator.tsx
-│   └── NewBadgeModal.tsx
-├── context/             # Контекст приложения
-│   └── AppContext.tsx
-├── screens/             # Экраны приложения
-│   ├── BadgesScreen.tsx
-│   ├── ChallengesScreen.tsx
-│   ├── HomeScreen.tsx
-│   └── SettingsScreen.tsx
-├── types/               # TypeScript типы
-│   └── index.ts
-└── utils/                # Утилиты
-    ├── challengeUtils.ts
-    └── motivationUtils.ts
+├── components/          # Reusable UI components
+├── screens/            # Main app screens
+├── context/            # State management
+├── types/              # TypeScript type definitions
+├── constants/          # App constants and configuration
+├── utils/              # Utility functions
+├── data/               # Mock data and initial state
+└── assets/             # Images, fonts, and other assets
 ```
 
-## Основные экраны
+## Getting Started
 
-### Главный экран (Home)
-- Отображение текущего челленджа
-- Таймер до окончания челленджа
-- Мотивация дня
-- Возможность поделиться результатами
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-### Челенджи (Challenges)
-- Список завершенных челленджей
-- Статистика выполнения
-- Возможность удаления записей
+2. For iOS:
+   ```bash
+   cd ios && pod install && cd ..
+   npm run ios
+   ```
 
-### Награды (Badges)
-- Полученные и неполученные бейджи
-- Описания наград
-- Возможность поделиться достижениями
+3. For Android:
+   ```bash
+   npm run android
+   ```
 
-### Настройки (Settings)
-- Профиль пользователя
-- Информация о приложении
-- Настройки уведомлений
-- Сброс прогресса
+## Learning Philosophy
 
-## Технологии
+LinguaQuest is built on the principle that consistent, short learning sessions are more effective than long, infrequent study periods. The 2-day lesson format encourages regular practice while the gamification elements keep learners motivated and engaged.
 
-- **React Native** - кроссплатформенная разработка
-- **TypeScript** - типизация
-- **Context API** - управление состоянием
-- **React Hooks** - функциональные компоненты
+## Future Enhancements
 
-## Разработка
+- Audio pronunciation features
+- Spaced repetition algorithm for vocabulary
+- Offline learning capabilities
+- Social features and leaderboards
+- Multiple learning modes (flashcards, quizzes, conversations)
+- Progress analytics and insights
 
-### Добавление новых челленджей
+---
 
-Отредактируйте файл `src/utils/challengeUtils.ts` и добавьте новые челленджи в массив `challenges`.
-
-### Добавление новых мотивационных цитат
-
-Отредактируйте файл `src/utils/motivationUtils.ts` и добавьте новые цитаты в массив `motivationQuotes`.
-
-### Добавление новых бейджей
-
-Отредактируйте файл `src/context/AppContext.tsx` и добавьте новые бейджи в массив `badges`.
-
-## Лицензия
-
-Этот проект создан для демонстрационных целей.
+**LinguaQuest** - Every word is a step forward in your language learning journey! 🌍📚

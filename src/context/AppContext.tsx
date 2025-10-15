@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
-import { AppState, Challenge, Badge, User, Motivation, DailyQuest, Achievement, LeaderboardEntry, Notification } from '../types';
+import { AppState, Lesson, Badge, User, Motivation, DailyQuest, Achievement, LeaderboardEntry, Notification, VocabularyWord } from '../types';
 
 interface AppContextType {
   state: AppState;
@@ -8,8 +8,8 @@ interface AppContextType {
 
 type AppAction =
   | { type: 'SET_USER'; payload: User }
-  | { type: 'SET_CURRENT_CHALLENGE'; payload: Challenge | undefined }
-  | { type: 'COMPLETE_CHALLENGE'; payload: Challenge }
+  | { type: 'SET_CURRENT_LESSON'; payload: Lesson | undefined }
+  | { type: 'COMPLETE_LESSON'; payload: Lesson }
   | { type: 'ADD_BADGE'; payload: Badge }
   | { type: 'TOGGLE_NOTIFICATIONS' }
   | { type: 'RESET_PROGRESS' }
@@ -23,7 +23,9 @@ type AppAction =
   | { type: 'UNLOCK_ACHIEVEMENT'; payload: Achievement }
   | { type: 'ADD_NOTIFICATION'; payload: Notification }
   | { type: 'MARK_NOTIFICATION_READ'; payload: string }
-  | { type: 'UPDATE_LEADERBOARD'; payload: LeaderboardEntry[] };
+  | { type: 'UPDATE_LEADERBOARD'; payload: LeaderboardEntry[] }
+  | { type: 'ADD_VOCABULARY_WORD'; payload: VocabularyWord }
+  | { type: 'LEARN_VOCABULARY_WORD'; payload: string };
 
 const initialState: AppState = {
   user: {
@@ -41,23 +43,30 @@ const initialState: AppState = {
     longestStreak: 0,
     rank: 'Bronze',
     points: 0,
+    currentLanguage: 'English',
+    wordsLearned: 0,
+    totalLessonsCompleted: 0,
   },
-  currentChallenge: {
+  currentLesson: {
     id: '1',
-    title: 'Do a light stretch for 10 minutes',
-    description: 'A simple stretching routine to improve flexibility and reduce muscle tension.',
-    duration: 10,
+    title: 'Learn 10 basic English words',
+    description: 'Master essential vocabulary for daily conversations and build your language foundation.',
+    duration: 15,
     isCompleted: false,
-    isAccepted: false,
+    isStarted: false,
     startDate: new Date(),
     endDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // 2 days
+    language: 'English',
+    level: 'beginner',
+    wordsLearned: 0,
+    totalWords: 10,
   },
-  completedChallenges: [],
+  completedLessons: [],
   badges: [
     {
       id: '1',
       name: 'Bronze Start',
-      description: 'Received for completing the first challenge in the app. This is your first victory on the path to healthy habits.',
+      description: 'Received for completing the first lesson in the app. This is your first victory on the path to language mastery.',
       icon: '🥉',
       isReceived: false,
     },
@@ -65,7 +74,7 @@ const initialState: AppState = {
   motivations: [
     {
       id: '1',
-      text: 'YOUR 2 DAYS ARE YOUR CHALLENGE',
+      text: 'EVERY WORD IS A STEP FORWARD',
       date: new Date(),
     },
   ],
@@ -75,9 +84,9 @@ const initialState: AppState = {
   dailyQuests: [
     {
       id: '1',
-      title: 'Complete your first challenge',
-      description: 'Finish any 2-day challenge to earn bonus experience',
-      type: 'exercise',
+      title: 'Complete your first lesson',
+      description: 'Finish any language lesson to earn bonus experience',
+      type: 'lesson',
       target: 1,
       current: 0,
       reward: { experience: 50, points: 25 },
@@ -89,9 +98,9 @@ const initialState: AppState = {
     {
       id: '1',
       name: 'First Steps',
-      description: 'Complete your first challenge',
+      description: 'Complete your first lesson',
       icon: '🎯',
-      category: 'challenges',
+      category: 'lessons',
       requirement: 1,
       current: 0,
       isUnlocked: false,
@@ -100,7 +109,7 @@ const initialState: AppState = {
     {
       id: '2',
       name: 'Streak Master',
-      description: 'Maintain a 7-day streak',
+      description: 'Maintain a 7-day learning streak',
       icon: '🔥',
       category: 'streak',
       requirement: 7,
@@ -113,8 +122,8 @@ const initialState: AppState = {
   notifications: [
     {
       id: '1',
-      title: 'Welcome to 2Days Challenge!',
-      message: 'Start your fitness journey with your first 2-day challenge. Good luck!',
+      title: 'Welcome to LinguaQuest!',
+      message: 'Start your language learning journey with your first lesson. Good luck!',
       type: 'achievement',
       isRead: false,
       createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
@@ -122,7 +131,7 @@ const initialState: AppState = {
     {
       id: '2',
       title: 'Daily Quest Available',
-      message: 'Complete your first challenge to earn bonus experience points!',
+      message: 'Complete your first lesson to earn bonus experience points!',
       type: 'quest',
       isRead: false,
       createdAt: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
@@ -130,20 +139,45 @@ const initialState: AppState = {
   ],
   currentStreak: 0,
   lastActivityDate: undefined,
+  vocabulary: [
+    {
+      id: '1',
+      word: 'Hello',
+      translation: 'Привет',
+      language: 'English',
+      difficulty: 'easy',
+      isLearned: false,
+      timesReviewed: 0,
+    },
+    {
+      id: '2',
+      word: 'Goodbye',
+      translation: 'До свидания',
+      language: 'English',
+      difficulty: 'easy',
+      isLearned: false,
+      timesReviewed: 0,
+    },
+  ],
 };
 
 const appReducer = (state: AppState, action: AppAction): AppState => {
   switch (action.type) {
     case 'SET_USER':
       return { ...state, user: action.payload };
-    case 'SET_CURRENT_CHALLENGE':
-      return { ...state, currentChallenge: action.payload };
-    case 'COMPLETE_CHALLENGE':
-      const completedChallenge = { ...action.payload, isCompleted: true, completedAt: new Date() };
+    case 'SET_CURRENT_LESSON':
+      return { ...state, currentLesson: action.payload };
+    case 'COMPLETE_LESSON':
+      const completedLesson = { ...action.payload, isCompleted: true, completedAt: new Date() };
       return {
         ...state,
-        currentChallenge: undefined,
-        completedChallenges: [...state.completedChallenges, completedChallenge],
+        currentLesson: undefined,
+        completedLessons: [...state.completedLessons, completedLesson],
+        user: {
+          ...state.user,
+          totalLessonsCompleted: state.user.totalLessonsCompleted + 1,
+          wordsLearned: state.user.wordsLearned + completedLesson.wordsLearned,
+        },
       };
     case 'ADD_BADGE':
       return {
@@ -157,9 +191,14 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
     case 'RESET_PROGRESS':
       return {
         ...state,
-        currentChallenge: undefined,
-        completedChallenges: [],
+        currentLesson: undefined,
+        completedLessons: [],
         badges: state.badges.map(badge => ({ ...badge, isReceived: false, receivedAt: undefined })),
+        user: {
+          ...state.user,
+          totalLessonsCompleted: 0,
+          wordsLearned: 0,
+        },
       };
     case 'UPDATE_USER_TIME':
       return {
@@ -264,6 +303,24 @@ const appReducer = (state: AppState, action: AppAction): AppState => {
       return {
         ...state,
         leaderboard: action.payload,
+      };
+    case 'ADD_VOCABULARY_WORD':
+      return {
+        ...state,
+        vocabulary: [...state.vocabulary, action.payload],
+      };
+    case 'LEARN_VOCABULARY_WORD':
+      return {
+        ...state,
+        vocabulary: state.vocabulary.map(word =>
+          word.id === action.payload
+            ? { ...word, isLearned: true, timesReviewed: word.timesReviewed + 1, lastReviewed: new Date() }
+            : word
+        ),
+        user: {
+          ...state.user,
+          wordsLearned: state.user.wordsLearned + 1,
+        },
       };
     default:
       return state;

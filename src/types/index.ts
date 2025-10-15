@@ -1,15 +1,19 @@
-export interface Challenge {
+export interface Lesson {
   id: string;
   title: string;
   description: string;
   duration: number; // в минутах
   isCompleted: boolean;
-  isAccepted?: boolean;
+  isStarted?: boolean;
   startDate?: Date;
   endDate?: Date;
-  acceptedAt?: Date;
+  startedAt?: Date;
   completedAt?: Date;
   actualDuration?: number; // фактическое время выполнения в минутах
+  language: string;
+  level: 'beginner' | 'intermediate' | 'advanced';
+  wordsLearned: number;
+  totalWords: number;
 }
 
 export interface Badge {
@@ -19,7 +23,7 @@ export interface Badge {
   icon: string; // emoji для начала
   isReceived: boolean;
   receivedAt?: Date;
-  challengeId?: string;
+  lessonId?: string;
 }
 
 export interface User {
@@ -34,10 +38,13 @@ export interface User {
   experience: number;
   experienceToNextLevel: number;
   totalExperience: number;
-  streak: number; // текущая серия дней
+  streak: number; // текущая серия дней изучения
   longestStreak: number; // самая длинная серия
   rank: 'Bronze' | 'Silver' | 'Gold' | 'Platinum' | 'Diamond';
   points: number;
+  currentLanguage: string;
+  wordsLearned: number;
+  totalLessonsCompleted: number;
 }
 
 export interface Motivation {
@@ -50,7 +57,7 @@ export interface DailyQuest {
   id: string;
   title: string;
   description: string;
-  type: 'exercise' | 'streak' | 'time' | 'social';
+  type: 'lesson' | 'streak' | 'time' | 'words' | 'social';
   target: number;
   current: number;
   reward: {
@@ -67,7 +74,7 @@ export interface Achievement {
   name: string;
   description: string;
   icon: string;
-  category: 'streak' | 'challenges' | 'time' | 'social' | 'special';
+  category: 'streak' | 'lessons' | 'time' | 'words' | 'social' | 'special';
   requirement: number;
   current: number;
   isUnlocked: boolean;
@@ -97,8 +104,8 @@ export interface Notification {
 
 export interface AppState {
   user: User;
-  currentChallenge?: Challenge;
-  completedChallenges: Challenge[];
+  currentLesson?: Lesson;
+  completedLessons: Lesson[];
   badges: Badge[];
   motivations: Motivation[];
   notificationsEnabled: boolean;
@@ -110,6 +117,18 @@ export interface AppState {
   notifications: Notification[];
   currentStreak: number;
   lastActivityDate?: Date;
+  vocabulary: VocabularyWord[];
+}
+
+export interface VocabularyWord {
+  id: string;
+  word: string;
+  translation: string;
+  language: string;
+  difficulty: 'easy' | 'medium' | 'hard';
+  isLearned: boolean;
+  timesReviewed: number;
+  lastReviewed?: Date;
 }
 
 export type RootStackParamList = {
@@ -119,7 +138,7 @@ export type RootStackParamList = {
 
 export type MainTabParamList = {
   Home: undefined;
-  Challenges: undefined;
-  Badges: undefined;
+  Lessons: undefined;
+  Vocabulary: undefined;
   Settings: undefined;
 };

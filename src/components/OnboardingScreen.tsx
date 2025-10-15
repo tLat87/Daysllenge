@@ -72,7 +72,8 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
 
       {/* Next button */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.nextButton} onPress={onNext}>
+        {/* <TouchableOpacity style={styles.nextButton} onPress={onNext}> */}
+        <TouchableOpacity style={styles.nextButton}>
           <Text style={styles.nextButtonIcon}>→</Text>
         </TouchableOpacity>
       </View>
