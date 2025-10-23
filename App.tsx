@@ -7,8 +7,8 @@
 
 import React from 'react';
 import { StatusBar, StyleSheet, View } from 'react-native';
-import { AppProvider } from './src/context/AppContext';
-import AppContainer from './src/components/AppContainer';
+import { AppProvider } from './src/state/LanguageAppContext';
+import AppContainer from './src/ui/LinguaQuestApp';
 
 function App() {
   return (
